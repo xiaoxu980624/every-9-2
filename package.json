@@ -4,10 +4,14 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "test": "vue-cli-service build --mode testing",
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "core-js": "^3.16.3",
+    "lib-flexible": "^0.3.2",
+    "vant": "^2.12.26",
     "vue": "^2.6.14",
     "vue-router": "^3.5.2",
     "vuex": "^3.6.2"
@@ -17,7 +21,9 @@
     "@vue/cli-plugin-router": "^4.5.13",
     "@vue/cli-plugin-vuex": "^4.5.13",
     "@vue/cli-service": "^4.5.13",
+    "babel-plugin-import": "^1.13.3",
     "node-sass": "^4.14.1",
+    "postcss-pxtorem": "^6.0.0",
     "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.14"
   },
