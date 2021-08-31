@@ -1,245 +1,152 @@
 <template>
-
-  <div class="login">
-     <div class="top">
-       <img class="img" src="@/assets/A1.jpg" alt="">
-     </div>
-
-     <!-- 登录 -->
-     <div class="log">
-         <p class="one">
-           <input type="text" v-model="tel" placeholder="请输入手机号" name="" id="">
-           <button class="btn" @click="get" v-if="!isshow">获取验证码</button>
-            <button class="btn" v-if="isshow" style="color:#ccc;">获取验证码({{time}})</button>
-         </p>
-          <p class="two">
-           <input type="text" v-model="code" placeholder="请输入短信验证码" name="" id="">
-         </p>
-           <div class="no">
-           *未注册的手机号将自动注册
-           <button class="btn2">使用密码登录</button>
-         </div>
-        <div class="deng">
-           <van-button class="dl" type="danger" @click="login"> 登录</van-button>
+    <div class="box">
+        <div class="box_img">
+          <img src="@/assets/ww.jpg" alt="" class="img">
         </div>
-       
-     </div>
-
-     <!-- 底部 -->
-     <div class="inf">
-      <div class="info">
-       <van-checkbox v-model="checked" checked-color="#ee0a24"></van-checkbox>
-       <p >我同意</p>
-        <a  href="/treaty?name=user_protect_contract" class="">用户注册协议</a>
-       <p >和</p>
-       <a  href="/treaty?name=user_protect_contract" class="">隐私保护协议</a>
-      </div>
-     </div>
-  </div>
+        <div class="box_list">
+          <div class="form">
+              <input type="text" class="ipt" placeholder="请输入电话号" v-model="mobile"/>
+              <!-- <input type="text" placeholder="请输入手机号"> -->
+              <button class="btn" @click="login">{{sms}}</button>
+              <input type="text" class="ipt" v-model="sms_type"  placeholder="请输入短信验证码"  @click="getsms"/>
+              <!-- <input type="text" placeholder="请输入密码" > -->
+              <p class="p">*未注册的手机号将自动注册 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span @click=show >使用密码</span></p>
+            <van-button @click="loginn" class="aa" size="large" color="linear-gradient(to right, #ff6034, #ee0a24)">
+  登录
+</van-button>
+          </div>
+        </div>
+    </div>
 </template>
 
 <script>
-import smsCode from '@/http/api.js'
+import {smsCode,login} from '@/http/api.js'
+
 export default {
-  components: {},
-  data() {
-    return {
-      tel: "",//手机号
-      code: "",//验证码
-      checked: false,
-      isshow: false,
-      time: 60
-    };
-  },
-  computed: {},
-  watch: {},
-  methods: {
-    //获取验证码
-    async get() {
-      var reg= /^1[358679]\d{9}$/
-      if(!reg.test(this.tel)){
-        this.$toast.fail("手机号格式不正确")
-        return false
-      }
-      this.isshow = true;
-      let res=await smsCode({
-          mobile: this.tel,
-          sms_type: 'login'
-        })
-         .then(() => {
-           this.isshow = true;
-          this.time = 60;
-          let that= this;
-          var timer = setInterval(function() {
-            that.time--;
-            if (that.time <= 0) {
-              that.isshow = false;
-              clearInterval(timer);
-            }
-          }, 1000);
-        
-        });
-      
+    data() {
+        return {
+            loginss:JSON.parse(localStorage.getItem('token'))||[],
+            mobile:'',
+             sms_type:'',// 验证码
+             	sms_code:"",//登录验证码
+             sms:"获取验证码",
+             isshow:false,
+        };
     },
-  async  login() {
-      //勾选
-      if (!this.checked) {
-        this.$toast.fail("请勾选协议");
-        return;
-      }
-      if (this.tel == "") {
-        this.$toast.fail("手机号格式不正确");
-        return;
-      }
-      //登录
-        let res=await this.$http.post('/login', {
-          mobile: this.tel,
-          sms_code:this.code,
-          type:2,//短信登录
-          client:1,//学生端
-        })
-        .then((res)=>{
-          console.log(res);
-          if(res.code==200){
-            this.$router.push('/set')
+    mounted() {
+
+    },
+    async created(){
+       
+    },
+    methods: {
+        async  login(){
+             var ipone=/^1[3456789]\d{9}$/
+             if(!ipone.test(this.mobile)||this.mobile==""){
+                 return false
+             }else{
+               this.getsms()
+                  let res = await smsCode({mobile:this.mobile,sms_type:"login"})
+                  console.log(res);
+                  console.log(res.data.remember_token)
+                  // localStorage.setItem(JSON.stringify(res.data.remember_token))
+                  // this.$router.push('/My')
+
+             }
+         },
+        async  loginn(){
+          if(this.mobile==''){
+            return false;
           }
-        })
+            let res = await login({	sms_code:this.sms_code,type:2})
+            this.$router.push('/My')
+             console.log(res.data.remember_token)
+            localStorage.getItem(JSON.stringify(this.token))
+         },
+         getsms(){
+          //  console.log(111)
+           var time=60;
+           var timer = setInterval(() => {
+              this.sms=`倒计时${time}后`
+             if(time<=0){
+                clearInterval(timer)
+                this.sms='获取验证码'
+             }
+             time--
+           }, 1000);
+            // localStorage.setItem(JSON.stringify(''))
+           console.log(timer)
+         },
+         show(){
+          this.$router.push('sms-logins')
+         }
          
-      
-    }
-  },
-  created() {},
-  mounted() {}
+         
+    },
 };
 </script>
-<style lang='scss' scoped>
-.login {
+
+<style scoped >
+.box{
+   width: 100%;
+   height: 100%;
+   /* background: red; */
+}
+.box_img{
   width: 100%;
-  background: #f1f1f1;
-  .act {
-    background: red;
-  }
-  .right {
-    display: inline-block;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    color: #ccc;
-    font-size: 12px;
-    text-align: center;
-    line-height: 50px;
-  }
-  .top {
-    width: 100%;
-
-    .img {
-      width: 100%;
-      height: 560px;
-      margin: auto;
-    }
-  }
-  .log {
-    width: 100%;
-    height: 240px;
-    text-align: center;
-    background: #fff;
-    margin-top: 18px;
-    padding-top: 15px;
-    .dl {
-      width: 408px;
-      height: 80px;
-      margin-top: 20px;
-      border-radius: 5px;
-      color: #fff;
-      background: linear-gradient(
-        to left,
-         rgb(226,  25,  25),
-         rgb(232,  89,  112)
-      );
-    }
-    p {
-      width: 70%;
-      margin: auto;
-      padding-bottom: 20px;
-      height: 45px;
-      line-height: 45px;
-      overflow: hidden;
-      border-bottom: 1px solid #eaeaea;
-    }
-    .deng {
-      width: 100%;
-      height: 50px;
-      margin-top: 80px;
-      border-radius: 5px;
-      box-shadow: 2px 2px 30px 0px rgb (242,  82,  82);
-      background: linear-gradient(to left,  red,  red,  pink);
-    }
-
-    input {
-      width: 370px;
-      border: 0px;
-      height: 60px;
-      line-height: 60px;
-
-      background-color: #fff;
-      font-size: 16px;
-    }
-    .one {
-      position: relative;
-      margin-top: 50px;
-      margin-bottom: 80px;
-    }
-    .btn {
-      border: 0px;
-      color: red;
-      font-size: 12px;
-      background: #fff;
-      position: absolute;
-      right: 50px;
-      top: 5px;
-      margin-bottom: 30px;
-    }
-  }
-  .no {
-    width: 75%;
-
-    font-size: 14px;
-    color: #999;
-    margin-top: 30px;
-    padding-left: 10px;
-    box-sizing: border-box;
-    margin-top: 25px;
-    position: relative;
-    button {
-      border: 0px;
-      position: absolute;
-      right: -55px;
-      background: #fff;
-    }
-  }
-
-  .inf {
-    background: #fff;
-    width: 100%;
-    font-size: 14px;
-   position: relative;
-    .info {
-      width: 100%;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: absolute;
-      top: 400px;
-    }
-    p {
-      font-size: 14px;
-    }
-    a {
-      color: red;
-      font-size: 14px;
-    }
-  }
+  height: 300px;
+}
+.img{
+   width: 100%;
+  height: 300px;
+}
+.box_list{
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 900px;
+  /* background: yellow; */
+  margin-top: 20px;
+}
+.form{
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  height: 200px;
+  margin: 0 auto;
+  /* flex-direction: row; */
+  /* line-height: 200px; */
+  /* background: red; */
+  /* padding-top: 40px; */
+}
+.ipt{
+  width: 400px;
+  margin-top: 20px;
+  height: 50px;
+  border: none;
+}
+/* .wlogin{
+  width: 400px;
+  height: 40px;
+  
+} */
+.p{
+  margin-top: 20px;
+}
+.aa{
+  margin-top: 20px;
+ 
+}
+.btn{
+  position: absolute;
+  top: 25px;
+  right:  15px;
+  color: red;
+  border: none;
+  
+}
+.wlogin{
+  width: 100%;
+  height: 1000px;
 }
 </style>
-              

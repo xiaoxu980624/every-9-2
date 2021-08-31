@@ -1,7 +1,15 @@
 <template>
   <div class="box">
+     
     <div class="bar">
+      <div class="bars">
+        <van-icon name="flower-o" size="100px"/>
+      </div>
+      <div class="zi" >
+        <p @click="$router.push('/logins')">登录/注册</p>
+      </div>
       <div class="t">
+       
         <van-grid :column-num="3">
           <van-grid-item
             v-for="(item,index) in arr"
@@ -11,6 +19,7 @@
              @click="$router.push('/login')"
              badge="2+" 
           />
+          
         </van-grid>
       </div>
     </div>
@@ -74,6 +83,10 @@ export default {
   methods: {
     login() {
       this.$router.push("/login");
+    },
+    den(){
+      console.log(111)
+      this.$router.push('/logins')
     }
   }
 };
@@ -85,6 +98,7 @@ export default {
   height: 100%;
   padding-bottom: 50px;
   .bar {
+    position: relative;
     width: 100%;
     height: 300px;
     background-image: url("../assets/aa1.png"); //背景图
@@ -92,7 +106,7 @@ export default {
     background-repeat: no-repeat;
     .t {
       width: 100%;
-      height: 200px;
+      // height: 200px;
       line-height: 200px;
       text-align: center;
       position: relative;
@@ -124,5 +138,26 @@ export default {
     background: #f0f0f0;
     margin: 40px 0;
   }
+  .bars{
+      position: absolute;
+       width: 100px;
+       height: 100px;
+       background:yellow;
+       top: 50px;
+       left: 155px;
+      //  z-index: 9999;
+       border-radius: 50%;
+    }
+    .zi{
+        width: 80px;
+        height: 20px;
+        // background: purple;
+        position: absolute;
+        font-size: 16px;
+        top: 170px;
+        left:175px;
+        color: white;
+    }
 }
+
 </style>

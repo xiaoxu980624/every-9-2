@@ -66,6 +66,30 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/logins.vue')
   },
+  {
+    path: '/sms-logins',
+    name: 'sms-logins',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/sms-logins.vue')
+  },
+  {
+    path: '/setting',
+    name: 'setting',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/setting.vue')
+  },
+  {
+    path: '/shezhi',
+    name: 'shezhi',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/shezhi.vue')
+  },
   // {
   //   path: '/about',
   //   name: 'About',
